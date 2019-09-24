@@ -9,7 +9,7 @@ from random import randint
 # Create new game
 game = SquareStackerGame()
 
-# Play until board fills
+# Play randomly until board fills
 num_moves = 1
 while True:
 
@@ -20,6 +20,10 @@ while True:
     # Check if any moves exist
     if num_valid_moves > 0:
 
+        # Show Game board
+        print('Move ' + str(num_moves) + ':')
+        print(game)
+
         # Generate random move
         m = randint(0, num_valid_moves - 1)
         move = valid_moves[m]
@@ -28,13 +32,14 @@ while True:
         j = move[2]
 
         # Apply move
-        print('Move ' + str(num_moves))
         print('Piece [' + str(k) + '] to Board [' + str(i) + ',' + str(j) + ']:')
         points = game.make_move(move)
         score = game.get_score()
-        print(str(game))
+        combo = game.get_combo()
+        print(game)
         print('Points earned: ' + str(points))
-        print('Total score: ' + str(score) + '\n')
+        print('Total score: ' + str(score))
+        print('Combo count: ' + str(combo) + '\n')
 
         # Increment move counter
         num_moves += 1
