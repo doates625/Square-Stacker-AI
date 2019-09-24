@@ -1,15 +1,16 @@
-'''
+"""
 GameState.py
 Square Stacker game emulator class
-'''
+"""
 
 from random import randint
 from copy import deepcopy
 
+
 class SquareStackerGame:
 
     def __init__(self):
-        '''
+        """
         Class constructor
 
         Game Colors
@@ -38,10 +39,10 @@ class SquareStackerGame:
         Scoring
         score = Points scored so far
         combo = Number of scores in a row
-        '''
+        """
 
         # Constants
-        self._colors = list('PGBYOV')
+        self._colors = ['P', 'G', 'B', 'Y', 'O', 'V']
         self._num_colors = len(self._colors)
 
         # Initialize Empty Board
@@ -68,12 +69,12 @@ class SquareStackerGame:
         self._add_pieces()
 
     def get_valid_moves(self):
-        '''
+        """
         List of all valid moves for given state
 
         Moves have the form [k, i, j]
         Moving piece k to board tile [i, j]
-        '''
+        """
         moves = []
         for k in range(3):
             if self._is_piece_playable[k]:
@@ -85,9 +86,9 @@ class SquareStackerGame:
         return moves
 
     def is_move_valid(self, move):
-        '''
+        """
         Returns if given move is valid
-        '''
+        """
 
         # Parse move
         k, i, j = self._parse_move(move)
@@ -103,10 +104,10 @@ class SquareStackerGame:
         return True
 
     def make_move(self, move):
-        '''
+        """
         Applies move to game board (if valid)
         Returns points for this move
-        '''
+        """
 
         # Check if move is valid
         points = 0
@@ -125,7 +126,7 @@ class SquareStackerGame:
 
             # Delete cleared tials
             new_board = deepcopy(self._board)
-            
+
             # Look for cleared rows
             for i in range(3):
 
@@ -137,7 +138,7 @@ class SquareStackerGame:
                             row_colors.remove(c)
 
                 # Add points for each color
-                points += 3*len(row_colors)
+                points += 3 * len(row_colors)
 
                 # Remove colors from board
                 for j in range(3):
@@ -156,7 +157,7 @@ class SquareStackerGame:
                             col_colors.remove(c)
 
                 # Add points for each color
-                points += 3*len(col_colors)
+                points += 3 * len(col_colors)
 
                 # Remove colors from board
                 for i in range(3):
@@ -172,20 +173,20 @@ class SquareStackerGame:
                     if c in pos_colors and c not in self._board[i][i]:
                         pos_colors.remove(c)
                 for c in self._colors:
-                    if c in neg_colors and c not in self._board[i][2-i]:
+                    if c in neg_colors and c not in self._board[i][2 - i]:
                         neg_colors.remove(c)
 
             # Add points for each color
-            points += 3*len(pos_colors)
-            points += 3*len(neg_colors)
+            points += 3 * len(pos_colors)
+            points += 3 * len(neg_colors)
 
             # Remove diagonal colors from board
             for i in range(3):
                 for n in range(3):
                     if self._board[i][i][n] in pos_colors:
                         new_board[i][i][n] = '_'
-                    if self._board[i][2-i][n] in neg_colors:
-                        new_board[i][2-i][n] = '_'
+                    if self._board[i][2 - i][n] in neg_colors:
+                        new_board[i][2 - i][n] = '_'
 
             # Look for cleared singles
             for i in range(3):
@@ -221,29 +222,40 @@ class SquareStackerGame:
         # Return points
         return points
 
+    def get_board(self):
+        """
+        Returns copy of game board
+        """
+        return deepcopy(self._board)
+
+    def get_piece(self):
+        """
+        Returns copy of game pieces
+        """
+        return deepcopy(self._piece)
+
     def get_score(self):
-        '''
+        """
         Returns current game score
-        '''
+        """
         return self._score
 
     def get_combo(self):
-        '''
+        """
         Returns current game combo count
-        '''
+        """
         return self._combo
 
     def _add_pieces(self):
-        '''
+        """
         Adds three random pieces to the game if none are playable
-        '''
+        """
 
         # Check if no pieces are left
         if True not in self._is_piece_playable:
 
             # For each game piece
             for k in range(3):
-
                 # Add random color to piece
                 c = randint(0, self._num_colors - 1)
                 n = randint(0, 2)
@@ -252,29 +264,19 @@ class SquareStackerGame:
                 # Mark piece as playable
                 self._is_piece_playable[k] = True
 
-    def _playable_pieces(self):
-        '''
-        Returns list of playable piece k [0:2]
-        '''
-        piece = []
-        for k in range(3):
-            
-                piece.append(k)
-        return piece
-
     def _parse_move(self, move):
-        '''
+        """
         Returns k, i, j of move
-        '''
+        """
         k = move[0]
         i = move[1]
         j = move[2]
         return k, i, j
 
     def __str__(self):
-        '''
+        """
         String converter
-        '''
+        """
         msg = ''
 
         # Print each row [i]
@@ -299,10 +301,10 @@ class SquareStackerGame:
                 msg += self._piece[i][k]
                 if k < 2:
                     msg += ' '
-            msg += ']'
+            msg += ']\n'
 
-            # Print newline
-            if i < 2:
-                msg += '\n'
-            
+        # Print score and combo
+        msg += 'Score: ' + str(self._score) + '\t'
+        msg += 'Combo: ' + str(self._combo)
+
         return msg

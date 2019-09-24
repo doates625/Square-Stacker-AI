@@ -1,7 +1,7 @@
-'''
+"""
 Test.py
 Square Stacker game test script
-'''
+"""
 
 from SquareStackerGame import SquareStackerGame
 from random import randint
@@ -20,26 +20,18 @@ while True:
     # Check if any moves exist
     if num_valid_moves > 0:
 
-        # Show Game board
-        print('Move ' + str(num_moves) + ':')
-        print(game)
-
         # Generate random move
         m = randint(0, num_valid_moves - 1)
         move = valid_moves[m]
-        k = move[0]
-        i = move[1]
-        j = move[2]
+        k = move[0] + 1
+        i = move[1] + 1
+        j = move[2] + 1
 
         # Apply move
+        print('Move ' + str(num_moves) + ':')
         print('Piece [' + str(k) + '] to Board [' + str(i) + ',' + str(j) + ']:')
-        points = game.make_move(move)
-        score = game.get_score()
-        combo = game.get_combo()
-        print(game)
-        print('Points earned: ' + str(points))
-        print('Total score: ' + str(score))
-        print('Combo count: ' + str(combo) + '\n')
+        game.make_move(move)
+        print(str(game) + '\n')
 
         # Increment move counter
         num_moves += 1
