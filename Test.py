@@ -3,7 +3,7 @@ Test.py
 Square Stacker game test script
 """
 
-from SquareStackerGame import SquareStackerGame
+from SquareStackerGame import *
 from random import randint
 
 # Create new game
@@ -20,17 +20,15 @@ while True:
     # Check if any moves exist
     if num_valid_moves > 0:
 
-        # Generate random move
+        # Make random move
         m = randint(0, num_valid_moves - 1)
         move = valid_moves[m]
-        k = move[0] + 1
-        i = move[1] + 1
-        j = move[2] + 1
-
-        # Apply move
-        print('Move ' + str(num_moves) + ':')
-        print('Piece [' + str(k) + '] to Board [' + str(i) + ',' + str(j) + ']:')
+        k, i, j = move
         game.make_move(move)
+
+        # Display results
+        print('Move ' + str(num_moves) + ':')
+        print('Piece [' + str(k+1) + '] to Board [' + str(i+1) + ',' + str(j+1) + ']:')
         print(str(game) + '\n')
 
         # Increment move counter
