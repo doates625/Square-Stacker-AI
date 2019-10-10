@@ -26,9 +26,10 @@ Scoring
     _combo = Number of scores in a row
 """
 
+import numpy as np
 from random import randint
 from copy import deepcopy
-from operator import add, mul
+from operator import add
 from typing import List
 
 
@@ -53,6 +54,28 @@ def index_to_move(n):
     i = n // 3
     j = n % 3
     return [k, i, j]
+
+
+def move_to_vector(move):
+    """
+    Converts move to normalized 27D vector
+    :param move: Game move [k,i,j]
+    :return: List of 27 zeros with 1 on index of move
+    """
+    vector = [0] * 27
+    vector[move_to_index(move)] = 1
+    return vector
+
+
+def vector_to_move(vector):
+    """
+    Converts 27D move vector to move
+    :param vector: List of 27 zeros with 1 on index of move
+    :return: Game move [k,i,j]
+    """
+    index = np.argmax(vector)
+    move = index_to_move(index)
+    return move
 
 
 class SquareStackerGame:
@@ -126,6 +149,7 @@ class SquareStackerGame:
         """
         Applies move to game board (if valid)
         :param move: Move to make
+        :return: Points for this move
         """
 
         # Check if move is valid
@@ -273,11 +297,11 @@ class SquareStackerGame:
         """
         return self._combo
 
-    def get_state_vector(self, encoding):
+    def get_state_vector(self, encoding='state'):
         """
         Converts game state to a numeric vector
         :param encoding: 'color' or 'state'
-        :return: State vector (list[number]) representing game
+        :return: State vector representing game [np.array]
         """
         vector = []
         colors = ['_'] + self._colors
@@ -316,7 +340,7 @@ class SquareStackerGame:
             vector.append(self._combo)
 
         # Return vector
-        return vector
+        return np.array(vector)
 
     def __str__(self):
         """
