@@ -20,7 +20,7 @@ dqn_input_dim = len(SquareStackerGame().get_state_vector())
 dqn_output_dim = len(move_to_vector([0, 0, 0]))
 
 # Training Settings
-train_num_games = 1000
+train_num_games = 10000
 train_fail_reward = -500
 train_epsilon = 0.1
 
