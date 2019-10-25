@@ -4,6 +4,7 @@ Square Stacker Deep Q Network trainer
 """
 
 import numpy as np
+
 from SquareStackerGame import *
 from keras.models import Sequential
 from keras.layers import Dense, Activation
