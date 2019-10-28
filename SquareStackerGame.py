@@ -131,7 +131,7 @@ class SquareStackerGame:
         """
         SIZE = 30
         WIN_SIZE = 300
-        UPDATE_TIME = 250  # how often image is updated in ms
+        UPDATE_TIME = 500  # how often image is updated in ms
 
         # Create env of array 30x30x3
         # 30x30 is 2d grip, 3 is for rgb

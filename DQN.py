@@ -60,14 +60,9 @@ for game_i in range(train_num_games):
 
     # Game Printout
     now = time.time()
-    # if now - last_time > wait_time:
-    #     last_time = now
-    #     print(f'Simulating game {game_i + 1}/{train_num_games}...')
-    #     print(now - start)
-    #     # ax1.clear()
-    #     # ax1.plot(plot_game, plot_score)
-    #     # plt.draw()
-    #     # plt.pause(1)
+    if now - last_time > wait_time:
+        print(f'Simulating game {game_i + 1}/{train_num_games}...')
+        last_time = now
 
     # Create batch of training data
     training_data = []  # List of (state, move, reward, next state, done)
