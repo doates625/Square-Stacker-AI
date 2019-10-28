@@ -31,6 +31,9 @@ from random import randint
 from copy import deepcopy
 from operator import add
 from typing import List
+from PIL import Image
+import cv2
+import numpy as np
 
 
 def move_to_index(move):
@@ -79,8 +82,17 @@ def vector_to_move(vector):
 
 
 class SquareStackerGame:
-
     _colors: List[str] = ['P', 'G', 'B', 'Y', 'O', 'V']  # Piece colors
+
+    # colors in BGR
+    _colors_rgb = {'P': (128, 0, 255),
+                   'G': (103, 251, 37),
+                   'B': (242, 226, 53),
+                   'Y': (14, 223, 246),
+                   'O': (2, 121, 255),
+                   'V': (255, 46, 184),
+                   '_': (87, 92, 95)}
+
     _num_colors: int = len(_colors)  # Number of piece colors
 
     def __init__(self):
@@ -110,6 +122,88 @@ class SquareStackerGame:
 
         # Add random tile piece
         self._add_pieces()
+
+    def show(self, game_num):
+        """
+        creates image of current game state and displays it
+        :game_num: int
+        :return:
+        """
+        SIZE = 30
+        WIN_SIZE = 300
+        UPDATE_TIME = 1000  # how often image is updated in ms
+
+        # Create env of array 30x30x3
+        # 30x30 is 2d grip, 3 is for rgb
+        env = np.zeros((SIZE, SIZE, 3), dtype=np.uint8)
+
+        # Board Tiles
+        for i in range(3):
+            for j in range(3):
+                # center points of each tile in env
+                x = 6 * i + 3
+                y = 6 * j + 3
+
+                tile = self._board[i][j]  # tile at point on board
+                self.color_tile(env, x, y, tile)
+
+        # Piece Tiles
+        for i in range(3):
+            # center points for each piece
+            x = 6 * i + 3
+            y = 23
+            tile = self._piece[i]  # tile at point on board
+            self.color_tile(env, x, y, tile)
+
+        img = Image.fromarray(env, 'RGB')
+        img = img.resize((WIN_SIZE, WIN_SIZE))
+
+        dy = 20
+        line1 = "Game Number: " + str(game_num)
+        line2 = "Score: " + str(self.get_score())
+
+        img = np.array(img)
+        self.display_text(img, line1)
+        self.display_text(img, line2, dy)
+
+        cv2.imshow("image", img)
+        cv2.waitKey(UPDATE_TIME)
+
+    def display_text(self, img, text, dy=0):
+        """
+        displays text on the img
+        :param img: Image
+        :param text: String
+        :param dy: int of offset between lines
+        :return:
+        """
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        bottomLeftCornerOfText = (10, 300 - 50 + dy)
+        fontScale = .5
+        fontColor = (255, 255, 255)
+        cv2.putText(img, text, bottomLeftCornerOfText, cv2.FONT_HERSHEY_SIMPLEX, fontScale, fontColor)
+
+    def color_tile(self, env, x, y, tile):
+        """
+        Adds tile to the image grid
+        :param env: Array of img (30x30x3)
+        :param x: int
+        :param y: int
+        :param tile: Array of tile colors (3x1)
+        :return:
+        """
+        # outer color
+        for tx in range(-2, 3):
+            for ty in range(-2, 3):
+                env[x + tx][ y + ty] = self._colors_rgb[tile[2]]
+
+        # middle color
+        for tx in range(-1, 2):
+            for ty in range(-1, 2):
+                env[x + tx] [y + ty] = self._colors_rgb[tile[1]]
+
+        # inner color
+        env[x, y] = self._colors_rgb[tile[0]]
 
     def get_valid_moves(self):
         """
@@ -188,7 +282,7 @@ class SquareStackerGame:
                 color_clears = list(map(add, color_clears, neg_clears))
 
             # Add up total points
-            points = 3 * sum(map(lambda x: x**2, color_clears))
+            points = 3 * sum(map(lambda x: x ** 2, color_clears))
             points += self._process_tile(i, j, new_board)
 
             # Update score and combo

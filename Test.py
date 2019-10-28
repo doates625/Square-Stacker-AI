@@ -6,16 +6,21 @@ Square Stacker game test script
 from SquareStackerGame import *
 from random import randint
 
+
 # Create new game
 game = SquareStackerGame()
 
 # Play randomly until board fills
 num_moves = 1
+
+
 while True:
 
     # Get valid moves
     valid_moves = game.get_valid_moves()
     num_valid_moves = len(valid_moves)
+
+    game.show(1)
 
     # Check if any moves exist
     if num_valid_moves > 0:
@@ -27,7 +32,7 @@ while True:
         game.make_move(move)
 
         # Display results
-        print('Move ' + str(num_moves) + ':')
+        print('\nMove ' + str(num_moves) + ':')
         print('Piece [' + str(k+1) + '] to Board [' + str(i+1) + ',' + str(j+1) + ']:')
         print(str(game) + '\n')
 
@@ -39,3 +44,5 @@ while True:
         # Exit game
         print('No moves left!')
         break
+
+    # input("Press Enter for next move\n\n")
