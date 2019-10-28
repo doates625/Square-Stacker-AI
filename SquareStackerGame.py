@@ -123,21 +123,21 @@ class SquareStackerGame:
         # Add random tile piece
         self._add_pieces()
 
-    def show(self, game_num):
+    def show(self, game_num, update_time = 500):
         """
         creates image of current game state and displays it
         :game_num: int
+        :update_time: int, time in ms for how often img gets updated
         :return:
         """
-        SIZE = 30
-        WIN_SIZE = 300
-        UPDATE_TIME = 500  # how often image is updated in ms
+        SIZE = 30   # size of initial array
+        WIN_SIZE = 300  # size of window when rescaled
 
         # Create env of array 30x30x3
         # 30x30 is 2d grip, 3 is for rgb
         env = np.zeros((SIZE, SIZE, 3), dtype=np.uint8)
 
-        # Board Tiles
+        # Iterate through each board tile and add the colors to the grid
         for i in range(3):
             for j in range(3):
                 # center points of each tile in env
@@ -147,7 +147,7 @@ class SquareStackerGame:
                 tile = self._board[i][j]  # tile at point on board
                 self.color_tile(env, x, y, tile)
 
-        # Piece Tiles
+        # Iterate through each piece tile and add the colors to the grid
         for i in range(3):
             # center points for each piece
             x = 6 * i + 3
@@ -155,19 +155,23 @@ class SquareStackerGame:
             tile = self._piece[i]  # tile at point on board
             self.color_tile(env, x, y, tile)
 
-        img = Image.fromarray(env, 'RGB')
-        img = img.resize((WIN_SIZE, WIN_SIZE))
 
-        dy = 20
+        img = Image.fromarray(env, 'RGB')   # convert grid to an rgb image
+        img = img.resize((WIN_SIZE, WIN_SIZE))  # resize to the complete window size
+
+        dy = 20 # offset pixels for each new line
+
         line1 = "Game Number: " + str(game_num)
         line2 = "Score: " + str(self.get_score())
 
-        img = np.array(img)
+        img = np.array(img)     # convert to a nunmpy array
+
+        # display text
         self.display_text(img, line1)
         self.display_text(img, line2, dy)
 
-        cv2.imshow("image", img)
-        cv2.waitKey(UPDATE_TIME)
+        cv2.imshow("image", img)    # display image
+        cv2.waitKey(update_time)    # delay between each update
 
     def display_text(self, img, text, dy=0):
         """
@@ -178,10 +182,10 @@ class SquareStackerGame:
         :return:
         """
         font = cv2.FONT_HERSHEY_SIMPLEX
-        bottomLeftCornerOfText = (10, 300 - 50 + dy)
-        fontScale = .5
-        fontColor = (255, 255, 255)
-        cv2.putText(img, text, bottomLeftCornerOfText, cv2.FONT_HERSHEY_SIMPLEX, fontScale, fontColor)
+        bottom_left = (10, 300 - 50 + dy)
+        font_scale = .5
+        font_color = (255, 255, 255)
+        cv2.putText(img, text, bottom_left, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_color)
 
     def color_tile(self, env, x, y, tile):
         """
