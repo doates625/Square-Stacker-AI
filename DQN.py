@@ -59,6 +59,8 @@ last_time = time.time()
 start = last_time
 wait_time = 10   # time in seconds between outputs
 
+close_window = False
+
 # Play Games to Train Model
 progress_tracker.start()
 for game_i in range(train_num_games):
@@ -72,7 +74,7 @@ for game_i in range(train_num_games):
         # ax1.plot(plot_game, plot_score)
         # plt.draw()
         # plt.pause(1)
-        # last_time = now
+        last_time = now
 
     # Create batch of training data
     training_data = []  # List of (state, move, reward, next state, done)
@@ -83,9 +85,14 @@ for game_i in range(train_num_games):
     num_valid_moves = len(valid_moves)
     done = num_valid_moves == 0
 
+    if close_window:
+        game.close_window()
+
     while not done:
         if not (game_i + 1) % 500:
+            close_window = True
             game.show(game_i + 1)
+
 
         # Get game state vector
         state = game.get_state_vector()
