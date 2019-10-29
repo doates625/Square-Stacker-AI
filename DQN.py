@@ -11,6 +11,8 @@ from keras.layers import Dense, Activation
 from keras.optimizers import Adam
 # from keras.callbacks import TensorBoard
 import csv
+from ProgressTracker import ProgressTracker
+from ScoreTracker import ScoreTracker
 import time
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -19,12 +21,12 @@ import matplotlib.animation as animation
 print('Square Stacker DQN Trainer')
 
 # DQN Settings
-dqn_discount = 0
+dqn_discount = 0.0
 dqn_input_dim = len(SquareStackerGame().get_state_vector())
 dqn_output_dim = len(move_to_vector([0, 0, 0]))
 
 # Training Settings
-train_num_games = 5000
+train_num_games = 10000
 train_fail_reward = -500
 train_epsilon = 0.1
 
@@ -38,24 +40,27 @@ dqn = Sequential([
 ])
 dqn.compile(optimizer=Adam(), loss='mse', metrics=['accuracy'])
 
-# TensorBoard Object
-# board = TensorBoard(log_dir='TensorBoard')
+# Progress Trackers
+time_print_interval = 2.0
+progress_tracker = ProgressTracker(time_print_interval)
+game_print_interval = 200
+score_tracker = ScoreTracker(game_print_interval)
 
 # CSV Logger
 csv_file = open('Log.csv', 'w', newline='')
 csv_writer = csv.writer(csv_file, delimiter=',')
 
+# Plotting
 plot_game, plot_score = [], []
-
 fig = plt.figure()
 ax1 = fig.add_subplot(1, 1, 1)
-
 print("Beginning Training Model")
 last_time = time.time()
 start = last_time
 wait_time = 10   # time in seconds between outputs
 
 # Play Games to Train Model
+progress_tracker.start()
 for game_i in range(train_num_games):
 
     # Game Printout
@@ -111,11 +116,15 @@ for game_i in range(train_num_games):
         if done:
             break
 
-    # Log game number and score in CSV
+    # Update CSV and plots
+    score = game.get_score()
     plot_game.append(game_i + 1)
-    plot_score.append(game.get_score())
+    plot_score.append(score)
+    csv_writer.writerow([str(game_i + 1), str(score)])
 
-    csv_writer.writerow([str(game_i + 1), str(game.get_score())])
+    # Progress Printouts
+    progress_tracker.update(float(game_i) / train_num_games)
+    score_tracker.update(score)
 
     # Form training data
     states = []
@@ -132,6 +141,4 @@ for game_i in range(train_num_games):
         q_vectors.append(q_vector)
 
     # Train network
-    # dqn.fit(np.array(states), np.array(q_vectors), verbose=0, callbacks=[board])
     dqn.fit(np.array(states), np.array(q_vectors), verbose=0)
-
