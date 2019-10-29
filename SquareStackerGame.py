@@ -123,7 +123,7 @@ class SquareStackerGame:
         # Add random tile piece
         self._add_pieces()
 
-    def show(self, game_num, update_time = 500):
+    def show(self, game_num, update_time=500):
         """
         creates image of current game state and displays it
         :game_num: int
@@ -155,7 +155,6 @@ class SquareStackerGame:
             tile = self._piece[i]  # tile at point on board
             self.color_tile(env, x, y, tile)
 
-
         img = Image.fromarray(env, 'RGB')   # convert grid to an rgb image
         img = img.resize((WIN_SIZE, WIN_SIZE))  # resize to the complete window size
 
@@ -172,6 +171,9 @@ class SquareStackerGame:
 
         cv2.imshow("image", img)    # display image
         cv2.waitKey(update_time)    # delay between each update
+
+    def close_window(self):
+        cv2.destroyWindow("image")
 
     def display_text(self, img, text, dy=0):
         """

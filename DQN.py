@@ -39,6 +39,7 @@ time_print_interval = 2.0
 progress_tracker = ProgressTracker(time_print_interval)
 game_print_interval = 50
 score_tracker = ScoreTracker(game_print_interval)
+game_show_interval = 100
 
 # Score Plotting
 plot_game_count = []
@@ -67,7 +68,9 @@ for game_i in range(train_num_games):
     done = num_valid_moves == 0
 
     while not done:
-        if not (game_i + 1) % 500:
+
+        # Display game GUI
+        if not (game_i + 1) % game_show_interval:
             game.show(game_i + 1)
 
         # Get game state vector
@@ -96,6 +99,7 @@ for game_i in range(train_num_games):
         # Exit game if lost
         if done:
             break
+    game.close_window()
 
     # Update CSV and plots
     score = game.get_score()
