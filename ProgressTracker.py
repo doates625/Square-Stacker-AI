@@ -34,7 +34,11 @@ class ProgressTracker:
         :return: True if printout occurred
         """
         time_now = time()
-        if time_now - self._time_print > self._interval:
+        do_update = time_now - self._time_print > self._interval
+        if do_update:
             self._time_print = time_now
             time_left = (1.0 - progress) * (time_now - self._time_init) / progress
             print(f'Progress: {progress * 100.0:.3f}%, Time left: {time_left / 60.0:.1f} min')
+
+        # Return update flag
+        return do_update

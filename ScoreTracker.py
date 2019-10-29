@@ -15,7 +15,10 @@ class ScoreTracker:
         :param interval: Number of games to min, max, mean over
         """
         self._interval = interval
-        self._reset()
+        self._num_scores = 0
+        self._mean_score = 0.0
+        self._min_score = float_info.max
+        self._max_score = float_info.min
 
     def update(self, score):
         """
@@ -31,12 +34,33 @@ class ScoreTracker:
 
         # Print check
         self._num_scores += 1
-        if self._num_scores == self._interval:
+        do_update = self._num_scores == self._interval
+        if do_update:
             self._mean_score /= self._interval
             print(f'Scores: Mean: {self._mean_score:.3f}, Min: {self._min_score:.3f}, Max: {self._max_score:.3f}')
-            self._reset()
 
-    def _reset(self):
+        # Return update flag
+        return do_update
+
+    def get_mean_score(self):
+        """
+        :return: Mean score from game batch
+        """
+        return self._mean_score
+
+    def get_min_score(self):
+        """
+        :return: Min score from game batch
+        """
+        return self._min_score
+
+    def get_max_score(self):
+        """
+        :return: Max score from game batch
+        """
+        return self._max_score
+
+    def reset(self):
         """
         Resets score tracking stats
         :return: None
