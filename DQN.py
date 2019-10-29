@@ -48,12 +48,12 @@ csv_writer = csv.writer(csv_file, delimiter=',')
 plot_game, plot_score = [], []
 
 fig = plt.figure()
-# ax1 = fig.add_subplot(1, 1, 1)
+ax1 = fig.add_subplot(1, 1, 1)
 
 print("Beginning Training Model")
 last_time = time.time()
 start = last_time
-wait_time = 5 # time in seconds between outputs
+wait_time = 10   # time in seconds between outputs
 
 # Play Games to Train Model
 for game_i in range(train_num_games):
@@ -62,7 +62,12 @@ for game_i in range(train_num_games):
     now = time.time()
     if now - last_time > wait_time:
         print(f'Simulating game {game_i + 1}/{train_num_games}...')
-        last_time = now
+        # print(now-start)
+        # ax1.clear()
+        # ax1.plot(plot_game, plot_score)
+        # plt.draw()
+        # plt.pause(1)
+        # last_time = now
 
     # Create batch of training data
     training_data = []  # List of (state, move, reward, next state, done)
@@ -72,6 +77,7 @@ for game_i in range(train_num_games):
     valid_moves = game.get_valid_moves()
     num_valid_moves = len(valid_moves)
     done = num_valid_moves == 0
+
     while not done:
         if not (game_i + 1) % 500:
             game.show(game_i + 1)
