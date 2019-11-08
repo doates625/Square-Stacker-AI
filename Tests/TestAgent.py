@@ -5,9 +5,7 @@ Test function for evaluating Square Stacker AI agents
 
 import numpy as np
 import matplotlib.pyplot as plt
-from ProgressTracker import ProgressTracker
-from RandomAgent import RandomAgent
-from DQNAgent import DQNAgent
+from Utilities.ProgressTracker import ProgressTracker
 from SquareStackerGame import SquareStackerGame
 
 

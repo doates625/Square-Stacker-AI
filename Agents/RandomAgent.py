@@ -3,7 +3,7 @@ RandomAgent.py
 Square Stacker AI agent which makes random moves (baseline)
 """
 
-from Agent import Agent
+from Agents.Agent import Agent
 from numpy.random import randint
 
 

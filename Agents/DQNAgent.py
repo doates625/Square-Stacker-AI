@@ -10,9 +10,9 @@ from keras.layers import Dense, Activation
 from keras.models import Sequential
 from keras.optimizers import Adam
 
-from Agent import Agent
-from ProgressTracker import ProgressTracker
-from ScoreTracker import ScoreTracker
+from Agents.Agent import Agent
+from Utilities.ProgressTracker import ProgressTracker
+from Utilities.ScoreTracker import ScoreTracker
 from SquareStackerGame import *
 
 
@@ -36,7 +36,7 @@ class DQNAgent(Agent):
         ])
         self._dqn.compile(optimizer=Adam(), loss='mse', metrics=['accuracy'])
 
-    def train(self, num_fits, games_per_fit, discount, epsilon, csv_name='DQN_training_log.csv'):
+    def train(self, num_fits, games_per_fit, discount, epsilon, csv_name=None):
         """
         Trains DQN via repeated game simulation
         :param num_fits: Number of times to fit network
