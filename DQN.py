@@ -115,7 +115,7 @@ for game_i in range(train_num_games):
         plot_max_score.append(score_tracker.get_max_score())
         plot_game_count.append(game_i)
 
-        # Update progress plot
+        # Update progress plots
         axes.clear()
         axes.set_title('Score Progress')
         axes.set_xlabel('Game')
