@@ -1,9 +1,9 @@
 """
-RandomAgent.py
+random_.py
 Square Stacker AI agent which makes random moves (baseline)
 """
 
-from Agents.Agent import Agent
+from agents.agent import Agent
 from numpy.random import randint
 
 

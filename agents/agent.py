@@ -1,5 +1,5 @@
 """
-Agent.py
+agent.py
 Superclass for Square Stacker AI agents
 """
 

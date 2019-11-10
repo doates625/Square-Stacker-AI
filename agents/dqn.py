@@ -1,5 +1,5 @@
 """
-DQNAgent.py
+dqn.py
 Square Stacker Deep Q Network agent
 """
 
@@ -10,10 +10,10 @@ from keras.layers import Dense, Activation
 from keras.models import Sequential
 from keras.optimizers import Adam
 
-from Agents.Agent import Agent
-from Utilities.ProgressTracker import ProgressTracker
-from Utilities.ScoreTracker import ScoreTracker
-from SquareStackerGame import *
+from agents.agent import Agent
+from utils.progress_tracker import ProgressTracker
+from utils.score_tracker import ScoreTracker
+from square_stacker_game import *
 
 
 class DQNAgent(Agent):

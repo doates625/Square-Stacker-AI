@@ -1,10 +1,10 @@
 """
-TestDQNAgent.py
+dqn.py
 Test script for Square Stacker Deep Q Network Agent
 """
 
-from Agents.DQNAgent import DQNAgent
-from Tests.TestAgent import test_agent
+from agents.dqn import DQNAgent
+from tests.agent import test_agent
 
 # Test Settings
 num_fits = 20

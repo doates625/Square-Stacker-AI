@@ -1,5 +1,5 @@
 """
-SquareStackerGame.py
+square_stacker_game.py
 Square Stacker game emulator class
 
 Game State Encoding:
@@ -26,7 +26,6 @@ Scoring
     _combo = Number of scores in a row
 """
 
-import numpy as np
 from random import randint
 from copy import deepcopy
 from operator import add
@@ -126,8 +125,8 @@ class SquareStackerGame:
     def show(self, game_num, update_time=500):
         """
         creates image of current game state and displays it
-        :game_num: int
-        :update_time: int, time in ms for how often img gets updated
+        :param game_num: int
+        :param update_time: int, time in ms for how often img gets updated
         :return:
         """
         SIZE = 30   # size of initial array
@@ -477,3 +476,15 @@ class SquareStackerGame:
         msg += 'Combo: ' + str(self._combo)
 
         return msg
+
+    def deepcopy(self):
+        """
+        Returns deep copy of game
+        """
+        game = SquareStackerGame()
+        game._board = deepcopy(self._board)
+        game._piece = deepcopy(self._piece)
+        game._is_piece_playable = deepcopy(self._is_piece_playable)
+        game._score = self._score
+        game._combo = self._combo
+        return game
