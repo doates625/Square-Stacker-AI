@@ -36,6 +36,7 @@ def test_agent(agent, num_games=10000, num_bins=20):
 
         # Play game until no valid moves exist
         game = SquareStackerGame()
+        game.show()
         while True:
 
             # Generate valid moves
@@ -50,6 +51,7 @@ def test_agent(agent, num_games=10000, num_bins=20):
                 else:
                     move = agent.select_move(game)
                 game.make_move(move)
+                game.show()
             else:
                 # Log score and exit game
                 scores_list[i] = game.get_score()
