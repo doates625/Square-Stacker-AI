@@ -36,7 +36,10 @@ class MCTS(Agent):
 
         self.total_simulations = 0
         self.root_node = None
-        self.if_debug = True
+        self.if_debug = False
+
+        # parameters to change for how deep it goes
+        self.max_sims = 200
 
     def select_move(self, game):
         # type: (SquareStackerGame) -> None
@@ -48,12 +51,13 @@ class MCTS(Agent):
 
         root = deepcopy(game)
         self.root_node = Node(root)
-        max_sims = 1000
         self.total_simulations = 0
         # while within some limit (time or power)
-        for i in range(max_sims):
+        for i in range(self.max_sims):
             self.total_simulations += 1
+
             self.debug("Simulation number: " + str(self.total_simulations))
+
             leaf = self.selection(self.root_node)  # selection
             self.debug("Leaf chosen " + str(leaf))
             simulation_result = self.simulation(leaf)
@@ -68,8 +72,13 @@ class MCTS(Agent):
     def selection(self, node):
         # states encoded as state vectors
         self.debug("SELECTING")
+        depth = 1
         while self.fully_expanded(node):
+            depth += 1
             node = self.best_uct(node)
+
+        # if not self.total_simulations % 50:
+        #     print("current depth " + str(depth))
 
         if self.non_terminal(node):
             return self.pick_unvisited(node)
@@ -83,7 +92,7 @@ class MCTS(Agent):
         :param node: Node
         :return: bool
         """
-        if set(node.children) == set(node.visited_children):
+        if len(node.children) == len(node.visited_children) and node.children:
             return True
         else:
             return False
@@ -126,8 +135,8 @@ class MCTS(Agent):
             sim_node = self.sim_random(sim_node)
             num += 1
 
-            if not self.total_simulations % 10:
-                sim_node.game_state.show(num)
+            # if not self.total_simulations % 10:
+            #     sim_node.game_state.show(num)
 
         return sim_node.state_score
 
@@ -180,7 +189,7 @@ class MCTS(Agent):
                 best = child
                 top_score = try_score
 
-        print(scores)
+        # print(scores)
         return best
 
     def uct(self, node):
