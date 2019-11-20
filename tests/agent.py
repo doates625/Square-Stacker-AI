@@ -52,9 +52,10 @@ def test_agent(agent, num_games=10000, num_bins=20):
                     move = agent.select_move(game)
                 game.make_move(move)
                 move_num += 1
+                # game.show(i)
 
-                # if not move_num % 20:
-                print("Move Number: " + str(move_num))
+                if not move_num % 20:
+                    print("Move Number: " + str(move_num))
             else:
                 # Log score and exit game
                 scores_list[i] = game.get_score()

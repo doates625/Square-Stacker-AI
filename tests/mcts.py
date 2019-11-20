@@ -9,10 +9,10 @@ from square_stacker_game import SquareStackerGame
 from tests.agent import test_agent
 
 # Test Settings
-test_num_games = 10
+test_num_games = 1
 
 # Test Agent
-agent = MCTS()
+agent = MCTS(max_sims=50)
 test_agent(agent, num_games=test_num_games)
 
 

@@ -27,7 +27,7 @@ from agents.mcts.Node import Node
 
 class MCTS(Agent):
 
-    def __init__(self):
+    def __init__(self, max_sims = 50):
         # Takes an instance of a Board and optionally some keyword
         # arguments.  Initializes the list of game states and the
         # statistics tables.
@@ -37,9 +37,10 @@ class MCTS(Agent):
         self.total_simulations = 0
         self.root_node = None
         self.if_debug = False
+        self.loglevel = 0
 
         # parameters to change for how deep it goes
-        self.max_sims = 200
+        self.max_sims = max_sims
 
     def select_move(self, game):
         # type: (SquareStackerGame) -> None
@@ -56,12 +57,15 @@ class MCTS(Agent):
         for i in range(self.max_sims):
             self.total_simulations += 1
 
-            self.debug("Simulation number: " + str(self.total_simulations))
+            if not self.total_simulations % 50:
+                self.debug("Simulation number: " + str(self.total_simulations), loglevel=1)
 
             leaf = self.selection(self.root_node)  # selection
             self.debug("Leaf chosen " + str(leaf))
+
             simulation_result = self.simulation(leaf)
             self.debug("Simulation result: " + str(simulation_result))
+
             self.backpropagate(leaf, simulation_result)
 
         self.debug("MOVE CHOSEN")
@@ -73,17 +77,22 @@ class MCTS(Agent):
         # states encoded as state vectors
         self.debug("SELECTING")
         depth = 1
+
         while self.fully_expanded(node):
             depth += 1
             node = self.best_uct(node)
 
-        # if not self.total_simulations % 50:
-        #     print("current depth " + str(depth))
+        if not self.total_simulations % 50:
+            self.debug("current depth " + str(depth), loglevel=1)
 
+        # if terminal -> return node and simulate again
         if self.non_terminal(node):
-            return self.pick_unvisited(node)
+            if node.traversed == 0:     # if never traversed -> return node and simulate
+                return node
+            else:   # if has traversed but not expanded -> expand and return child
+                return self.expand(node)
         else:
-            return node  # in case no children are present / node is terminal
+            return node
 
     # EXPLORATION
     def fully_expanded(self, node):
@@ -92,33 +101,33 @@ class MCTS(Agent):
         :param node: Node
         :return: bool
         """
-        if len(node.children) == len(node.visited_children) and node.children:
+        # if len(node.children) == len(node.visited_children) and node.children:
+        if node.children:
             return True
         else:
             return False
 
-    def pick_unvisited(self, node):
+    def expand(self, parent):
         """
         create children for the node and choose one at random
-        :param node: Node
+        :param parent: Node
         :return: Node
         """
         self.debug("EXPAND CHILDREN")
-        valid_moves = node.valid_moves
+        valid_moves = parent.valid_moves
 
-        if not node.children:
-            for move in valid_moves:
-                new_game = node.game_state.deepcopy()
-                new_game.make_move(move)
+        # if not node.children:
+        for move in valid_moves:
+            new_game = parent.game_state.deepcopy()
+            new_game.make_move(move)
 
-                child = Node(new_game)
-                child.move = move
-                child.parent = node
-                node.children.append(child)
+            child = Node(new_game)
+            child.move = move
+            child.parent = parent
+            parent.children.append(child)
 
-        chosen_one = choice(node.children)
+        chosen_one = choice(parent.children)
 
-        node.visited_children.append(chosen_one)
         return chosen_one
 
     # SIMULATION
@@ -128,15 +137,9 @@ class MCTS(Agent):
         sim_game = node.game_state.deepcopy()
         sim_node = deepcopy(node)
         sim_node.game_state = sim_game
-        node.traversed += 1
-        num = 0
 
         while self.non_terminal(sim_node):
             sim_node = self.sim_random(sim_node)
-            num += 1
-
-            # if not self.total_simulations % 10:
-            #     sim_node.game_state.show(num)
 
         return sim_node.state_score
 
@@ -144,22 +147,10 @@ class MCTS(Agent):
     def sim_random(self, node):
         valid_moves = node.valid_moves
         rand_move = choice(valid_moves)
-        node.game_state.make_move(rand_move)
 
+        node.game_state.make_move(rand_move)
         node.update_state(node.game_state)
         return node
-
-    # check if leaf has any moves left
-    def non_terminal(self, leaf):
-        """
-        are there any legal moves from this state
-        :param leaf: Node()
-        :return: bool
-        """
-        if leaf.valid_moves:
-            return True
-        else:
-            return False
 
     # BACKPROPAGATION
     def backpropagate(self, node, result):
@@ -169,9 +160,12 @@ class MCTS(Agent):
         :param result: Int
         :return: None
         """
+        node.score += result
+        node.traversed += 1
+
         if node == self.root_node:
             return
-        node.score = result
+
         self.backpropagate(node.parent, result)
 
     def best_uct(self, node):
@@ -189,20 +183,33 @@ class MCTS(Agent):
                 best = child
                 top_score = try_score
 
-        # print(scores)
+        self.debug(scores)
         return best
 
     def uct(self, node):
-        return node.score + math.sqrt(2 * math.log(node.traversed) / self.total_simulations)
+        if node.traversed == 0:
+            return math.inf
+        return (node.score / node.traversed) + 2 * math.sqrt(math.log(node.parent.traversed) / node.traversed)
 
     def best_child(self, root):
-        # type: (Node) -> None
-
         # select the best child from the tree
         jesse = self.best_uct(root)
 
         return jesse
 
-    def debug(self, msg):
+    # check if leaf has any moves left
+    def non_terminal(self, leaf):
+        """
+        are there any legal moves from this state
+        :param leaf: Node()
+        :return: bool
+        """
+        if leaf.valid_moves:
+            return True
+        else:
+            return False
+
+    def debug(self, msg, loglevel=0):
         if self.if_debug:
-            print(msg)
+            if loglevel >= self.loglevel:
+                print(msg)

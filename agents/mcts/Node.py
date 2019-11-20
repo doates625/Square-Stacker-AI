@@ -11,7 +11,7 @@ class Node:
         self.score = 0
         self.state_score = game_state.get_score()
         self.valid_moves = game_state.get_valid_moves()
-        self.traversed = 1
+        self.traversed = 0
         self.parent = None
         self.children = []
         self.visited_children = []
