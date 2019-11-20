@@ -7,7 +7,7 @@ from agents.random import RandomAgent
 from tests.agent import test_agent
 
 # Test Settings
-test_num_games = 1000
+test_num_games =5000
 
 # Test Agent
 agent = RandomAgent()

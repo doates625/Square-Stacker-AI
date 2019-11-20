@@ -10,14 +10,18 @@ from agents.search.agent import SearchAgent
 from square_stacker_game import SquareStackerGame
 
 
-def test_agent(agent, num_games=10000, num_bins=20):
+def test_agent(agent, num_games=10000, num_bins=20, show=False):
     """
     tests given Square Stacker agent by running games
     :param agent: Square Stacker AI agent
     :param num_games: Number of games to test
     :param num_bins: Number of histogram bins
+    :param show: Show gameplay
     :return: None
     """
+
+    # Only show every this number of games
+    show_interval = 1000
 
     # Play games and track scores
     progress = ProgressTracker(1.0)
@@ -37,6 +41,9 @@ def test_agent(agent, num_games=10000, num_bins=20):
         # Play game until no valid moves exist
         game = SquareStackerGame()
         while True:
+
+            if show and i % show_interval == 0:
+                game.show(i)
 
             # Generate valid moves
             valid_moves = game.get_valid_moves()
