@@ -122,7 +122,7 @@ class SquareStackerGame:
         # Add random tile piece
         self._add_pieces()
 
-    def show(self, game_num = 0, update_time=500):
+    def show(self, game_num=0, update_time=500):
         """
         creates image of current game state and displays it
         :param game_num: int

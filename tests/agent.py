@@ -51,7 +51,7 @@ def test_agent(agent, num_games=10000, num_bins=20):
                 else:
                     move = agent.select_move(game)
                 game.make_move(move)
-                move_num += 1
+                # move_num += 1
                 # game.show(i)
 
                 if not move_num % 20:
