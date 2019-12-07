@@ -1,9 +1,9 @@
 """
-exhaustive.py
+memory.py
 Test script for Square Stacker Exhaustive search Agent
 """
 
-from agents.memory.agent import MemoryAgent
+from agents.memory import MemoryAgent
 from tests.agent import test_agent
 
 # Test Settings
